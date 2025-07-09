@@ -1,0 +1,42 @@
+version: "3.8"
+
+services:
+  # The Node-RED service, configured for live development
+  nodered:
+    # Use the official Node-RED image directly. No custom build needed.
+    image: nodered/node-red:3.1.10
+    container_name: nodered-migrations-dev
+    ports:
+      - "1880:1880"
+      # Keep the debug port available for optional debugging
+      - "9229:9229"
+    volumes:
+      # 1. Bind mount your node's source code directly into the container.
+      #    Node-RED will automatically detect the package.json and run `npm install`.
+      #    Any changes you make to your local files will be reflected instantly.
+      - ./src:/usr/src/app
+
+      # 2. Persist the rest of the Node-RED data (flows, settings, etc.)
+      #    so you don't lose your work on restart.
+      - ./data:/data
+    depends_on:
+      - postgres
+    command: >
+      sh -c "node-red -- --node-options=\"--inspect=0.0.0.0:9229\""
+
+  # The PostgreSQL database service (unchanged)
+  postgres:
+    image: postgres:16
+    container_name: postgres-migrations-db
+    environment:
+      POSTGRES_USER: nodered
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: migrations_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+# Define named volumes for persistent data
+volumes:
+  postgres_data:

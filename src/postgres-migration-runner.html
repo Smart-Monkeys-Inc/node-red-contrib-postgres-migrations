@@ -1,0 +1,119 @@
+<!-- Editor Configuration Panel -->
+<script type="text/html" data-template-name="postgres-migration-runner">
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Name" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-host"><i class="fa fa-server"></i> Host</label>
+    <input type="text" id="node-input-host" placeholder="localhost" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-port"><i class="fa fa-plug"></i> Port</label>
+    <input
+      type="number"
+      id="node-input-port"
+      placeholder="5432"
+      style="width: 100px;"
+    />
+  </div>
+  <div class="form-row">
+    <label for="node-input-user"><i class="fa fa-user"></i> User</label>
+    <input type="text" id="node-input-user" placeholder="postgres" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-password"><i class="fa fa-lock"></i> Password</label>
+    <input type="password" id="node-input-password" />
+  </div>
+  <div class="form-row">
+    <label for="node-input-database"
+      ><i class="fa fa-database"></i> Database</label
+    >
+    <input type="text" id="node-input-database" placeholder="mydatabase" />
+  </div>
+</script>
+
+<!-- Node Help Text -->
+<script type="text/html" data-help-name="postgres-migration-runner">
+  <p>
+    Runs PostgreSQL database migrations provided in <code>msg.migrations</code>.
+  </p>
+  <p>
+    This node uses Knex.js to connect to the database and run raw SQL
+    migrations. It keeps track of executed migrations in a table named
+    <code>_nodered_migrations</code> to prevent them from being run more than
+    once.
+  </p>
+
+  <h3>Inputs</h3>
+  <dl class="message-properties">
+    <dt>msg.migrations <span class="property-type">array</span></dt>
+    <dd>
+      An array of migration objects. Each object must have the following
+      properties:
+      <ul>
+        <li>
+          <code>name</code>: A unique string identifier for the migration (e.g.,
+          a timestamp like <code>20230101_create_users</code>).
+        </li>
+        <li>
+          <code>up</code>: A string containing the raw SQL to apply the
+          migration.
+        </li>
+      </ul>
+    </dd>
+  </dl>
+  <p>
+    <b>Example <code>msg.migrations</code>:</b>
+  </p>
+  <pre>
+[
+      {
+          "name": "20230101_create_users_table",
+          "up": "CREATE TABLE users (id SERIAL PRIMARY KEY, email TEXT);"
+      },
+      {
+          "name": "20230102_add_username_to_users",
+          "up": "ALTER TABLE users ADD COLUMN username TEXT;"
+      }
+  ]</pre
+  >
+
+  <h3>Outputs</h3>
+  <dl class="message-properties">
+    <dt>msg.payload <span class="property-type">object</span></dt>
+    <dd>
+      On success, the payload contains a summary of the operation, including an
+      array of applied migration names and a count of skipped migrations.
+    </dd>
+  </dl>
+
+  <h3>Details</h3>
+  <p>
+    The node properties must be configured with the connection details for your
+    PostgreSQL database.
+  </p>
+</script>
+
+<!-- Node Registration with Node-RED -->
+<script type="text/javascript">
+  RED.nodes.registerType("postgres-migration-runner", {
+    category: "storage",
+    color: "#5b85a7",
+    defaults: {
+      name: { value: "" },
+      host: { value: "localhost", required: true },
+      port: { value: 5432, required: true, validate: RED.validators.number() },
+      user: { value: "", required: true },
+      password: { value: "", type: "password" },
+      database: { value: "", required: true },
+    },
+    inputs: 1,
+    outputs: 1,
+    icon: "postgresql.png",
+    label: function () {
+      return this.name || "Postgres Migrations";
+    },
+    paletteLabel: "postgres migrate",
+  });
+</script>
