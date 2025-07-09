@@ -1,6 +1,6 @@
 {
   "name": "@smartmonkeysinc/node-red-contrib-postgres-migrations",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Node-RED node to run PostgreSQL migrations from a msg.migrations array using Knex.",
   "main": "index.js",
   "scripts": {
