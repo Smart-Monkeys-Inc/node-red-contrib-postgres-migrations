@@ -1,13 +1,17 @@
 {
-  "name": "node-red-contrib-postgres-migrations",
-  "version": "1.0.0",
+  "name": "@smartmonkeysinc/node-red-contrib-postgres-migrations",
+  "version": "0.1.0",
   "description": "A Node-RED node to run PostgreSQL migrations from a msg.migrations array using Knex.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mitchell Schuh",
-  "license": "Apache-2.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Smart-Monkeys-Inc/node-red-contrib-postgres-migrations.git"
+  },
   "keywords": [
     "node-red",
     "postgres",
@@ -16,6 +20,7 @@
     "knex"
   ],
   "node-red": {
+    "version": ">=4.0.0",
     "nodes": {
       "postgres-migration-runner": "postgres-migration-runner.js"
     }
